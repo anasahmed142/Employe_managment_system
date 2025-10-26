@@ -7,8 +7,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { getAllUsers } from '@/services/adminservice'; // Assuming this service exists
-import { getLocationHistory } from '@/services/adminservice'; // We will create this
+import { getAllUser, getLocationHistory } from '@/services/adminservice';
+import { useAppSelector } from "@/store"
 
 interface User {
   _id: string;
@@ -27,25 +27,27 @@ export default function LocationsPage() {
   const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
   const [locations, setLocations] = useState<Location[]>([]);
   const [loading, setLoading] = useState(false);
+  const user = useAppSelector((state) => state.auth.user);
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await getAllUsers();
-        setUsers(response.data);
-      } catch (error) {
-        console.error('Failed to fetch users', error);
-      }
-    };
-    fetchUsers();
-  }, []);
+    if (user && user?.role === "admin") {
+      const fetchUsers = async () => {
+        try {
+          const response = await getAllUser({ email: user.email });
+          setUsers(response.data);
+        } catch (error) {
+          console.error('Failed to fetch users', error);
+        }
+      };
+      fetchUsers();
+    }
+  }, [user]);
 
   const handleFetchLocations = async () => {
     if (!selectedUser || !selectedDate) return;
     setLoading(true);
     try {
-      // This service function needs to be created
-      const response = await getLocationHistory(selectedUser, selectedDate);
+      const response = await getLocationHistory({ userId: selectedUser, date: selectedDate });
       setLocations(response.data);
     } catch (error) {
       console.error('Failed to fetch locations', error);
