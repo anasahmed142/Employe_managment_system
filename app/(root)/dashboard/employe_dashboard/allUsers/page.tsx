@@ -1,3 +1,4 @@
+
 "use client"
 
 import {
@@ -15,6 +16,8 @@ import React, { useEffect, useState } from "react"
 import { toast } from "sonner"
 import { useAppSelector } from "@/store"
 import Loading from "@/components/ui/loading"
+import { useRouter } from "next/navigation"
+
 type User = {
   userId: string
   name: string
@@ -22,11 +25,14 @@ type User = {
   role: string
   status: "online" | "offline" | string
 }
+
 const Page = () => {
   const [allUsers, setAllUsers] = useState<User[]>([])
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
   const user = useAppSelector((state) => state.auth.user);
+  const router = useRouter();
+
   useEffect(() => {
     if (user && user?.role === "admin") {
       const fetchUsers = async () => {
@@ -51,6 +57,10 @@ const Page = () => {
     }
   }, [user]);
 
+  const handleUserClick = (userId: string) => {
+    router.push(`/dashboard/employe_dashboard/allUsers/${userId}`);
+  };
+
   return (
     <div className="p-4">
       <h1 className="text-xl font-bold mb-4">All Users</h1>
@@ -72,7 +82,7 @@ const Page = () => {
           <TableBody>
             {allUsers.length > 0 ? (
               allUsers.map((user) => (
-                <TableRow key={user.email}>
+                <TableRow key={user.email} onClick={() => handleUserClick(user.userId)} className="cursor-pointer">
                   <TableCell>{user.name}</TableCell>
                   <TableCell>{user.email}</TableCell>
                   <TableCell className="text-right">{user.role}</TableCell>

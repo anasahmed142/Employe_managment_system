@@ -1,34 +1,44 @@
 
-import mongoose, { Schema, Document, Model } from "mongoose";
+import mongoose, { Schema, Model, Document } from 'mongoose';
 
-export interface ILocation extends Document {
-  employee: mongoose.Schema.Types.ObjectId;
-  latitude: number;
-  longitude: number;
-  timestamp: Date;
+interface ILocation extends Document {
+  user: mongoose.Schema.Types.ObjectId;
+  photo: string;
+  location: {
+    latitude: number;
+    longitude: number;
+    accuracy: number;
+  };
 }
 
-const LocationSchema: Schema = new mongoose.Schema({
-  employee: {
+const LocationSchema = new mongoose.Schema({
+  user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    ref: 'User',
     required: true,
   },
-  latitude: {
-    type: Number,
+  photo: {
+    type: String,
     required: true,
   },
-  longitude: {
-    type: Number,
-    required: true,
+  location: {
+    latitude: {
+      type: Number,
+      required: true,
+    },
+    longitude: {
+      type: Number,
+      required: true,
+    },
+    accuracy: {
+      type: Number,
+      required: true,
+    },
   },
-  timestamp: {
-    type: Date,
-    default: Date.now,
-  },
+}, {
+  timestamps: true,
 });
 
-const Location: Model<ILocation> =
-  mongoose.models.Location || mongoose.model<ILocation>("Location", LocationSchema);
+const Location: Model<ILocation> = mongoose.models.Location || mongoose.model<ILocation>('Location', LocationSchema);
 
 export default Location;

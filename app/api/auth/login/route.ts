@@ -1,14 +1,14 @@
+
 import { connectionToDatabase } from "@/lib/db";
 import User from "@/models/User_model";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
+import Location from "@/models/Location_model";
 
 export async function POST(req: NextRequest) {
   try {
     const payload = await req.json(); 
-    const { email, password } = payload;
-
-    console.log("Received:", email, password);
+    const { email, password, location, photo } = payload;
 
     if (!email || !password) {
       return NextResponse.json({ success: false, message: "Email and password are required" }, { status: 400 });
@@ -24,6 +24,13 @@ export async function POST(req: NextRequest) {
     if (!checkpassword) {
       return NextResponse.json({ success: false, message: "Invalid credentials" }, { status: 401 });
     }
+    
+    const newLocation = new Location({
+      user: user._id,
+      photo,
+      location
+    });
+    await newLocation.save();
 
     user.status = "online";
     await user.save();

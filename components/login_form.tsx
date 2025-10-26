@@ -1,3 +1,4 @@
+
 "use client";
 
 import { cn } from "@/lib/utils";
@@ -26,6 +27,8 @@ import { login } from "@/store/AuthSlice";
 import { loginApi } from "@/services/authService";
 import { useRouter } from "next/navigation";
 import Loading from "./ui/loading";
+import { getLocation } from "@/lib/geolocation";
+import { openCamera } from "@/lib/camera";
 
 export function LoginForm({ className, ...props }: React.ComponentProps<"div">) {
   const dispatch = useAppDispatch();
@@ -50,7 +53,13 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
   }, [user, router]);
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      const responseData = await loginApi(values);
+      const location = await getLocation();
+      const photo = await openCamera();
+      const responseData = await loginApi({
+        ...values,
+        location,
+        photo
+      });
       const { loggedInUser } = responseData;
       if (!loggedInUser) {
         toast.error(responseData.message || "Login failed");

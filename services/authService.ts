@@ -1,9 +1,12 @@
+
 import api from "@/lib/axios";
 
 interface LoginPayload {
   name?: string;
   email: string;
   password: string;
+  location?: GeolocationCoordinates;
+  photo?: string;
 }
 interface LogoutPayload {
   email: string;
@@ -21,6 +24,4 @@ export const logoutApi = async (payload: LogoutPayload) => {
   const res = await api.post("/auth/logout", payload, { withCredentials: true });
   return res;
 };
-
-
 
