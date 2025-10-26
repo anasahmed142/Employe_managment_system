@@ -64,7 +64,7 @@ export default function LocationsPage() {
       </CardHeader>
       <CardContent>
         <div className="flex space-x-4 mb-4">
-          <Select onValueChange={setSelectedUser} value={selectedUser}>
+          <Select onValuechange={setSelectedUser} value={selectedUser}>
             <SelectTrigger>
               <SelectValue placeholder="Select Employee" />
             </SelectTrigger>
@@ -105,7 +105,7 @@ export default function LocationsPage() {
             ) : (
               <TableRow>
                 <TableCell colSpan={3} className="text-center">
-                  No location data for the selected criteria.
+                  No location data available
                 </TableCell>
               </TableRow>
             )}
