@@ -1,18 +1,18 @@
 
 import { NextResponse } from "next/server";
-import { connectDB } from "@/lib/db";
+import { connectionToDatabase } from "@/lib/db";
 import User from "@/models/User_model"; // Assuming you have a User model
 
 // A placeholder for a Location model
 // You would need to create this model similar to your User_model
-// import Location from "@/models/Location_model"; 
+import Location from "@/models/Location_model"; 
 
 // @desc    Log employee location
 // @route   POST /api/location
 // @access  Private (should be protected)
 export async function POST(req: Request) {
   try {
-    await connectDB();
+    await connectionToDatabase();
     const { userId, latitude, longitude } = await req.json();
 
     if (!userId || !latitude || !longitude) {
@@ -24,13 +24,13 @@ export async function POST(req: Request) {
     console.log(`Received location for user ${userId}: ${latitude}, ${longitude}`);
 
     // TODO: Create a Location model and save the data.
-    // const newLocation = new Location({
-    //   userId,
-    //   latitude,
-    //   longitude,
-    //   timestamp: new Date(),
-    // });
-    // await newLocation.save();
+    const newLocation = new Location({
+      userId,
+      latitude,
+      longitude,
+      timestamp: new Date(),
+    });
+    await newLocation.save();
 
     return NextResponse.json({ message: "Location logged successfully" }, { status: 201 });
   } catch (error) {
@@ -44,7 +44,7 @@ export async function POST(req: Request) {
 // @access  Private (for admins)
 export async function GET(req: Request) {
     try {
-        await connectDB();
+        await connectionToDatabase();
         const { searchParams } = new URL(req.url);
         const userId = searchParams.get("userId");
         const date = searchParams.get("date"); // e.g., "2023-10-27"

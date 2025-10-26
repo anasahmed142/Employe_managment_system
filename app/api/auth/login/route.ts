@@ -1,8 +1,7 @@
 import { connectionToDatabase } from "@/lib/db";
-import { response } from "@/lib/response";
 import User from "@/models/User_model";
 import { cookies } from "next/headers";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
@@ -12,18 +11,18 @@ export async function POST(req: NextRequest) {
     console.log("Received:", email, password);
 
     if (!email || !password) {
-      return response(null, 400, "Email and password are required");
+      return NextResponse.json({ success: false, message: "Email and password are required" }, { status: 400 });
     }
 
-    connectionToDatabase();
+    await connectionToDatabase();
     const user = await User.findOne({ email });
     if (!user) {
-      return response(null, 409, "plesase enter a valid email.");
+      return NextResponse.json({ success: false, message: "plesase enter a valid email." }, { status: 409 });
     }
 
     const checkpassword = await user.comparePassword(password);
     if (!checkpassword) {
-      return response(null, 401, "Invalid credentials");
+      return NextResponse.json({ success: false, message: "Invalid credentials" }, { status: 401 });
     }
 
     user.status = "online";
@@ -31,7 +30,7 @@ export async function POST(req: NextRequest) {
 
     const token = user.generateAccessToken();
     if (!token) {
-      return response(null, 500, "Token generation failed");
+      return NextResponse.json({ success: false, message: "Token generation failed" }, { status: 500 });
     }
 
     const CookieStore = await cookies();
@@ -55,8 +54,8 @@ export async function POST(req: NextRequest) {
       accessToken: token,
     };
 
-    return response({ loggedInUser }, 200, "Login successful");
+    return NextResponse.json({ success: true, loggedInUser, message: "Login successful" }, { status: 200 });
   } catch (error) {
-    return response({ error }, 500, "Internal Server Error");
+    return NextResponse.json({ success: false, error, message: "Internal Server Error" }, { status: 500 });
   }
 }

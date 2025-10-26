@@ -9,6 +9,12 @@ interface LocationHistoryPayload {
   date: string;
 }
 
+interface AddEmployeePayload {
+  name: string;
+  email: string;
+  adminEmail: string;
+}
+
 export const getAllUser = async (payload: AllUserPayload) => {
   const res = await api.post("/admin/alluser", payload);
   return res.data;
@@ -16,5 +22,10 @@ export const getAllUser = async (payload: AllUserPayload) => {
 
 export const getLocationHistory = async (payload: LocationHistoryPayload) => {
   const res = await api.post("/location", payload);
+  return res.data;
+};
+
+export const addEmployee = async (payload: AddEmployeePayload) => {
+  const res = await api.post("/admin/addemployee", payload);
   return res.data;
 };

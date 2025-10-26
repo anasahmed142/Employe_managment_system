@@ -40,19 +40,22 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
   });
   useEffect(() => {
     if (user) {
+      setloading(true);
       if (user.role === "admin") {
-        setloading(true)
         router.replace("/dashboard/employe_dashboard");
       } else {
-             setloading(true)
         router.replace("/dashboard/employe_dashboard");
       }
     }
   }, [user, router]);
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      const { data } = await loginApi(values);
-      const loggedInUser = data?.loggedInUser;
+      const responseData = await loginApi(values);
+      const { loggedInUser } = responseData;
+      if (!loggedInUser) {
+        toast.error(responseData.message || "Login failed");
+        return;
+      }
       dispatch(
         login({
           user: loggedInUser,
@@ -60,10 +63,10 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
         })
       );
 
-      toast.success(data.message || "Login successful");
+      toast.success(responseData.message || "Login successful");
            setloading(true)
       if (loggedInUser.role === "admin") {
-        router.push("/dashboard/admin_dashboard");
+        router.push("/dashboard/employe_dashboard");
       } else {
         router.push("/dashboard/employe_dashboard");
       }

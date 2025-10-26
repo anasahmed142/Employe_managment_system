@@ -5,7 +5,9 @@ import User from "@/models/User_model";
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { email } = body?.payload || {};
+    console.log('Body in user:',body.email);
+    
+    const { email } = body || {};
 
     if (!email) {
       return NextResponse.json(

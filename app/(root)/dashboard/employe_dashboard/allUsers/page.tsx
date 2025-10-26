@@ -27,35 +27,35 @@ const Page = () => {
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
   const user = useAppSelector((state) => state.auth.user);
-useEffect(() => {
-  if (user && user?.role === "admin") {
-    const fetchUsers = async () => {
-      try {
-        setLoading(true);
-        const res = await getAllUser({ email: user.email });
-        setAllUsers(res.data || []);
-      } catch (err: unknown) {
-        if (err instanceof Error) {
-          toast.error(err.message);
-          setError(err.message || "Failed to fetch users");
-        } else {
-          toast.error("Failed to fetch users");
-          setError("Failed to fetch users");
+  useEffect(() => {
+    if (user && user?.role === "admin") {
+      const fetchUsers = async () => {
+        try {
+          setLoading(true);
+          const res = await getAllUser({ email: user.email });
+          setAllUsers(res.data || []);
+        } catch (err: unknown) {
+          if (err instanceof Error) {
+            toast.error(err.message);
+            setError(err.message || "Failed to fetch users");
+          } else {
+            toast.error("Failed to fetch users");
+            setError("Failed to fetch users");
+          }
+        } finally {
+          setLoading(false);
         }
-      } finally {
-        setLoading(false);
-      }
-    };
+      };
 
-    fetchUsers(); 
-  }
-}, [user]);
+      fetchUsers();
+    }
+  }, [user]);
 
   return (
     <div className="p-4">
       <h1 className="text-xl font-bold mb-4">All Users</h1>
 
-      {loading &&  <Loading/  > }
+      {loading && <Loading />}
       {error && <p className="text-red-500">{error}</p>}
 
       {!loading && !error && (
@@ -72,12 +72,7 @@ useEffect(() => {
           <TableBody>
             {allUsers.length > 0 ? (
               allUsers.map((user) => (
-
-
-
-
-                <TableRow key={user.userId }>
-               
+                <TableRow key={user.email}>
                   <TableCell>{user.name}</TableCell>
                   <TableCell>{user.email}</TableCell>
                   <TableCell className="text-right">{user.role}</TableCell>
