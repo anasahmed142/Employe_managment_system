@@ -1,3 +1,4 @@
+
 "use client"
 
 import {
@@ -33,6 +34,8 @@ import { persistor, useAppDispatch, useAppSelector } from "@/store"
 import { logout } from "@/store/AuthSlice"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation";
+import { useRef, useState } from "react"
+import Webcam from "react-webcam"
 
 export function NavUser({
   user,
@@ -44,28 +47,43 @@ export function NavUser({
   }|null
 }) {
   const { isMobile } = useSidebar()
-    const dispatch = useAppDispatch();
-    const router = useRouter();
-    
-    const getUser  = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+  const webcamRef = useRef<Webcam>(null);
+  const [screenshot, setScreenshot] = useState<string | null>(null);
+  
+  const getUser  = useAppSelector((state) => state.auth);
   
   const handleLogout = async () => {
-  try {
-    const email = getUser.user?.email ;
-    if (!email) {
-      toast.error("No user email found for logout");
-      return;
+    try {
+      const email = getUser.user?.email ;
+      if (!email) {
+        toast.error("No user email found for logout");
+        return;
+      }
+      
+      const imageSrc = webcamRef.current?.getScreenshot();
+      if (!imageSrc) {
+        toast.error("Could not capture screenshot");
+        return;
+      }
+      setScreenshot(imageSrc);
+      
+      navigator.geolocation.getCurrentPosition(async (position) => {
+        const { latitude, longitude } = position.coords;
+        
+        const res = await logoutApi({ email, photo: imageSrc, location: { latitude, longitude } }); 
+        dispatch(logout()); 
+        await persistor.purge();
+        toast.success(res.data.message || "Logged out successfully");
+        router.replace("/auth/login"); 
+      });
+
+    } catch (err) {
+      console.error("Logout error:", err);
+      toast.error("Logout failed, please try again");
     }
-    const res = await logoutApi({ email }); 
-    dispatch(logout()); 
-    await persistor.purge();
-    toast.success(res.data.message || "Logged out successfully");
-    router.replace("/auth/login"); 
-  } catch (err) {
-    console.error("Logout error:", err);
-    toast.error("Logout failed, please try again");
-  }
-};
+  };
 
 
   return (
@@ -133,6 +151,12 @@ export function NavUser({
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
+      <Webcam
+        audio={false}
+        ref={webcamRef}
+        screenshotFormat="image/jpeg"
+        style={{ display: "none" }}
+      />
     </SidebarMenu>
   )
 }

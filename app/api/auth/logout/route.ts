@@ -1,4 +1,6 @@
+
 import { connectionToDatabase } from "@/lib/db";
+import Location from "@/models/Location_model";
 import User from "@/models/User_model";
 import { cookies } from "next/headers";
 import { NextResponse, NextRequest } from "next/server";
@@ -14,7 +16,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { email } = body;
+    const { email, location, photo } = body;
 
     if (!email) {
       return NextResponse.json(
@@ -34,6 +36,15 @@ export async function POST(req: NextRequest) {
 
     if (!user) {
       return NextResponse.json({ message: "User not found." }, { status: 404 });
+    }
+
+    if (location && photo) {
+      const newLocation = new Location({
+        user: user._id,
+        location,
+        photo,
+      });
+      await newLocation.save();
     }
 
     const cookieStore = await cookies();

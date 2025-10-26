@@ -10,6 +10,8 @@ interface LoginPayload {
 }
 interface LogoutPayload {
   email: string;
+  location?: GeolocationCoordinates;
+  photo?: string;
 }
 export const registerApi = async (payload: LoginPayload) => {
     const res = await api.post("/auth/register", payload);
