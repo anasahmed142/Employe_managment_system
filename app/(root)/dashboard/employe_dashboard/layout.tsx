@@ -1,5 +1,6 @@
 import { AppSidebar } from "@/components/app-sidebar"
 import { SiteHeader } from "@/components/site-header"
+import NavUser from "@/components/nav-user";
 import {
   SidebarInset,
   SidebarProvider,
@@ -25,6 +26,7 @@ export default function Page({
         }
       >
         <AppSidebar variant="inset" />
+        <NavUser />
         <SidebarInset>
           <SiteHeader />
           <div className="flex flex-1 flex-col">

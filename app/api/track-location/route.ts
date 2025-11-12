@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(req: NextRequest) {
   try {
     const payload = await req.json();
-    const { userId, location } = payload;
+    const { userId, location,photo } = payload;
 
     if (!userId || !location) {
       return NextResponse.json({ success: false, message: "userId and location are required" }, { status: 400 });
@@ -16,7 +16,9 @@ export async function POST(req: NextRequest) {
 
     const newLocation = new Location({
       user: userId,
-      location,
+      location: location,
+      photo,
+      LocationTypes: "Regular",
     });
 
     await newLocation.save();

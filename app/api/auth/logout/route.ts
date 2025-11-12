@@ -41,10 +41,13 @@ export async function POST(req: NextRequest) {
     if (location && photo) {
       const newLocation = new Location({
         user: user._id,
-        location,
-        photo,
+        LocationTypes: "Logout",
+        location: location,
+        photo
       });
-      await newLocation.save();
+      console.log("newLocation:",newLocation);
+      var id = await newLocation.save();
+      console.log("Logout saved:",id);
     }
 
     const cookieStore = await cookies();

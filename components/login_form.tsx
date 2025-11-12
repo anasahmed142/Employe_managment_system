@@ -54,11 +54,12 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       const location = await getLocation();
+      console.log("location:",location);
       const photo = await openCamera();
       const responseData = await loginApi({
         ...values,
-        location,
-        photo
+        location: location,
+        photo,
       });
       const { loggedInUser } = responseData;
       if (!loggedInUser) {

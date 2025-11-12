@@ -5,8 +5,9 @@ import "./globals.css";
 import ReduxProvider from "@/providers/ReduxProvider";
 import { Geist_Mono } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
+import ClientLayoutWrapper from "@/components/ClientLayoutWrapper";
 import LocationTracker from "@/components/utility/LocationTracker";
-
+import dynamic from "next/dynamic";
 const geistMono = Geist_Mono({
   subsets: ["latin"],
   variable: "--font-geist-mono",
@@ -44,16 +45,19 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
 
-     
+
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ReduxProvider>
+        {/* <ReduxProvider>
           <LocationTracker />
           {children}
           <Toaster position="top-right" closeButton duration={1000} />
-        </ReduxProvider>
+        </ReduxProvider> */}
+        <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+          <ClientLayoutWrapper>{children}</ClientLayoutWrapper>
+        </body>
       </body>
     </html>
   );

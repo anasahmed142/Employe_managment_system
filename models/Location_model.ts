@@ -3,12 +3,12 @@ import mongoose, { Schema, Model, Document } from 'mongoose';
 
 interface ILocation extends Document {
   user: mongoose.Schema.Types.ObjectId;
-  photo: string;
   location: {
     latitude: number;
     longitude: number;
     accuracy: number;
   };
+  photo: string | null;
 }
 
 const LocationSchema = new mongoose.Schema({
@@ -17,7 +17,7 @@ const LocationSchema = new mongoose.Schema({
     ref: 'User',
     required: true,
   },
-  photo: {
+  LocationTypes: {
     type: String,
     required: true,
   },
@@ -34,11 +34,15 @@ const LocationSchema = new mongoose.Schema({
       type: Number,
       required: true,
     },
+    photo: {
+      type: String,
+      required: false,
+    },
   },
 }, {
   timestamps: true,
 });
 
-const Location: Model<ILocation> = mongoose.models.Location || mongoose.model<ILocation>('Location', LocationSchema);
+const Location: Model<ILocation> = mongoose.models.Location || mongoose.model<ILocation>('location', LocationSchema);
 
 export default Location;
