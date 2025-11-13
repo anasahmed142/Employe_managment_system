@@ -6,6 +6,7 @@ interface User {
   email: string;
   role: string;
   status: string;
+  avatar?: string; // Added optional avatar property
 }
 
 interface AuthState {
@@ -27,7 +28,7 @@ const authSlice = createSlice({
       action: PayloadAction<{ user: User; token: string }>
     ) => {
       state.user = action.payload.user;
-      state.token = action.payload.token; // 👈 token set hoga
+      state.token = action.payload.token;
     },
     logout: (state) => {
       state.user = null;

@@ -1,161 +1,88 @@
-
 "use client"
 
-import {
-  IconCreditCard,
-  IconDotsVertical,
-  IconLogout,
-  IconNotification,
-  IconUserCircle,
-} from "@tabler/icons-react"
+import { IconLogout } from "@tabler/icons-react"
+import { useRouter } from "next/navigation"
 
+import { getLocation } from "@/lib/geolocation"
+import { logoutApi } from "@/services/authService"
+import { persistor, useAppDispatch, useAppSelector } from "@/store"
+import { logout } from "@/store/AuthSlice"
+
+import { toast } from "sonner"
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
 } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import {
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  useSidebar,
-} from "@/components/ui/sidebar"
-import { logoutApi } from "@/services/authService"
-import { persistor, useAppDispatch, useAppSelector } from "@/store"
-import { logout } from "@/store/AuthSlice"
-import { toast } from "sonner"
-import { useRouter } from "next/navigation";
-import { useRef, useState } from "react"
-import Webcam from "react-webcam"
-import { getLocation } from "@/lib/geolocation";
-import { openCamera } from "@/lib/camera";
 
-export default function NavUser({
-  user,
-}: {
-  user?: {
-    name: string
-    email: string
-    avatar?: string
-  } | null
-}) {
-  const { isMobile } = useSidebar()
-  const dispatch = useAppDispatch();
-  const router = useRouter();
-  const webcamRef = useRef<Webcam>(null);
-  const [screenshot, setScreenshot] = useState<string | null>(null);
-
-  const getUser = useAppSelector((state) => state.auth);
+const NavUser = () => {
+  const user = useAppSelector((state) => state.auth.user)
+  const dispatch = useAppDispatch()
+  const router = useRouter()
 
   const handleLogout = async () => {
+    const toastId = toast.loading("Logging you out...")
     try {
-      const email = getUser.user?.email;
-      if (!email) {
-        toast.error("No user email found for logout");
-        return;
+      const currentLocation = await getLocation()
+      const photoPlaceholder = "logout_photo_placeholder.jpg"
+
+      const locationPayload = {
+        latitude: currentLocation.latitude,
+        longitude: currentLocation.longitude,
+        accuracy: currentLocation.accuracy,
+        altitude: currentLocation.altitude ?? null,
+        altitudeAccuracy: currentLocation.altitudeAccuracy ?? null,
+        heading: currentLocation.heading ?? null,
+        speed: currentLocation.speed ?? null,
       }
 
-      const photo = await openCamera();
+      await logoutApi({
+        email: user?.email || "",
+        location: locationPayload,
+        photo: photoPlaceholder,
+      })
 
-
-      const location = await getLocation();
-      const res = await logoutApi({
-        email,
-        location,
-        photo,
-      });
-      dispatch(logout());
-      await persistor.purge();
-      toast.success(res.data.message || "Logged out successfully");
-      router.replace("/auth/login");
-
-    } catch (err) {
-      console.error("Logout error:", err);
-      toast.error("Logout failed, please try again");
+      dispatch(logout())
+      persistor.purge()
+      toast.success("Logged out successfully", { id: toastId })
+      router.replace("/auth/login")
+    } catch (error) {
+      console.error("Logout failed", error)
+      toast.error("Logout failed, please try again", { id: toastId })
     }
-  };
-
+  }
 
   return (
-    <SidebarMenu>
-      <SidebarMenuItem>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <SidebarMenuButton
-              size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-            >
-              <Avatar className="h-8 w-8 rounded-lg grayscale">
-                <AvatarImage src={user?.avatar} alt={user?.name} />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
-              </Avatar>
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user?.name}</span>
-                <span className="text-muted-foreground truncate text-xs">
-                  {user?.email}
-                </span>
-              </div>
-              <IconDotsVertical className="ml-auto size-4" />
-            </SidebarMenuButton>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
-            side={isMobile ? "bottom" : "right"}
-            align="end"
-            sideOffset={4}
-          >
-            <DropdownMenuLabel className="p-0 font-normal">
-              <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user?.avatar} alt={user?.name} />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
-                </Avatar>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{user?.name}</span>
-                  <span className="text-muted-foreground truncate text-xs">
-                    {user?.email}
-                  </span>
-                </div>
-              </div>
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <IconUserCircle />
-                Account
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <IconCreditCard />
-                Billing
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <IconNotification />
-                Notifications
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleLogout} >
-              <IconLogout />
-              Log out
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </SidebarMenuItem>
-      {/* <Webcam
-        audio={false}
-        ref={webcamRef}
-        screenshotFormat="image/jpeg"
-        style={{ display: "none" }}
-      /> */}
-    </SidebarMenu>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
+          type="button"
+          variant="ghost"
+          className="relative h-8 w-8 rounded-full"
+        >
+          <Avatar className="h-8 w-8">
+            <AvatarImage src={user?.avatar || undefined} alt={user?.name || "User"} />
+            <AvatarFallback>
+              {user?.name ? user.name.charAt(0).toUpperCase() : "U"}
+            </AvatarFallback>
+          </Avatar>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-56" align="end" forceMount>
+        <DropdownMenuItem onClick={handleLogout}>
+          <IconLogout className="mr-2 h-4 w-4" />
+          <span>Log out</span>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }
+
+export default NavUser
