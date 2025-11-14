@@ -33,6 +33,7 @@
     "@radix-ui/react-tooltip": "^1.2.8",
     "@reduxjs/toolkit": "^2.9.0",
     "@tabler/icons-react": "^3.34.1",
+    "@tanstack/react-table": "^8.21.3",
     "@types/mongoose": "^5.11.96",
     "add": "^2.0.6",
     "axios": "^1.11.0",
