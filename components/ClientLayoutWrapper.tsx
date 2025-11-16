@@ -1,15 +1,17 @@
 "use client";
 
-import { Toaster } from "@/components/ui/sonner";
-import LocationTracker from "@/components/utility/LocationTracker";
-import ReduxProvider from "@/providers/ReduxProvider";
+import { useAppSelector } from "@/store";
+import LocationTracker from "./utility/LocationTracker";
 
-export default function ClientLayoutWrapper({ children }: { children: React.ReactNode }) {
+const ClientLayoutWrapper = ({ children }: { children: React.ReactNode }) => {
+  const { user } = useAppSelector((state) => state.auth);
+
   return (
-    <ReduxProvider>
-      <LocationTracker />
+    <>
+      {user && <LocationTracker />}
       {children}
-      <Toaster position="top-right" closeButton duration={1000} />
-    </ReduxProvider>
+    </>
   );
-}
+};
+
+export default ClientLayoutWrapper;

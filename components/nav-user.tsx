@@ -21,6 +21,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { openCamera } from "@/lib/camera"
 
 const NavUser = () => {
   const user = useAppSelector((state) => state.auth.user)
@@ -31,8 +32,7 @@ const NavUser = () => {
     const toastId = toast.loading("Logging you out...")
     try {
       const currentLocation = await getLocation()
-      const photoPlaceholder = "logout_photo_placeholder.jpg"
-
+      const photo = await openCamera();
       const locationPayload = {
         latitude: currentLocation.latitude,
         longitude: currentLocation.longitude,
@@ -46,7 +46,7 @@ const NavUser = () => {
       await logoutApi({
         email: user?.email || "",
         location: locationPayload,
-        photo: photoPlaceholder,
+        photo,
       })
 
       dispatch(logout())

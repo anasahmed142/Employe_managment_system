@@ -1,14 +1,17 @@
+import mongoose, { Schema, Model, Document, Types } from 'mongoose';
 
-import mongoose, { Schema, Model, Document } from 'mongoose';
-
-interface ILocation extends Document {
-  user: mongoose.Schema.Types.ObjectId;
+// Interface matching the schema, including nested properties and timestamps
+export interface ILocation extends Document {
+  user: Types.ObjectId;
+  LocationTypes: string;
   location: {
     latitude: number;
     longitude: number;
     accuracy: number;
+    photo?: string;
   };
-  photo: string | null;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const LocationSchema = new mongoose.Schema({
@@ -40,9 +43,10 @@ const LocationSchema = new mongoose.Schema({
     },
   },
 }, {
-  timestamps: true,
+  timestamps: true, // Ensures createdAt and updatedAt are available
 });
 
-const Location: Model<ILocation> = mongoose.models.Location || mongoose.model<ILocation>('location', LocationSchema);
+// Singleton pattern to prevent model re-compilation
+const Location: Model<ILocation> = mongoose.models.Location || mongoose.model<ILocation>('Location', LocationSchema);
 
 export default Location;

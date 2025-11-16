@@ -1,45 +1,49 @@
-
 "use client";
 
+import { getLocation } from "@/lib/geolocation";
 import { useAppSelector } from "@/store";
 import { useEffect } from "react";
+import api from "@/lib/axios";
 
 const LocationTracker = () => {
   const user = useAppSelector((state) => state.auth.user);
 
   useEffect(() => {
-    if (user && user?.role !== "admin") {
-      const trackLocation = () => {
-        if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(
-            (position) => {
-              const { latitude, longitude, accuracy } = position.coords;
-              fetch("/api/track-location", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                  userId: user.userId,
-                  location: { latitude, longitude, accuracy },
-                }),
-              });
-            },
-            (error) => {
-              console.error("Error getting location:", error);
-            }
-          );
+    if (!user?.userId) return; // prevent firing when user is null
+// if (user && user?.role !== "admin") {
+    const trackLocation = async () => {
+      try {
+        console.log("Sending location...");
+
+        // Ensure location is awaited & resolved
+        const location = await getLocation();
+
+        if (!location || location instanceof Promise) {
+          console.error("Location not resolved:", location);
+          return;
         }
-      };
 
-      trackLocation(); // Track location immediately on component mount
-      const intervalId = setInterval(trackLocation, 5 * 60 * 1000); // Track location every 5 minutes
+        const responseData = {
+          userId: user.userId,
+          location,
+        };
 
-      return () => clearInterval(intervalId); // Cleanup on component unmount
-    }
+        const res = await api.post("/track-location", responseData);
+
+        console.log("Location response:", res.data);
+      } catch (error) {
+        console.error("Error tracking location:", error);
+      }
+    };
+
+    trackLocation(); // call once
+    const intervalId = setInterval(trackLocation, 5 * 60 * 1000); // every 5 minutes
+
+    return () => clearInterval(intervalId);
+  // }
   }, [user]);
 
-  return null; // This component doesn't render anything
+  return null;
 };
 
 export default LocationTracker;

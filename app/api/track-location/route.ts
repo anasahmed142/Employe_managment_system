@@ -1,12 +1,11 @@
-
 import { connectionToDatabase } from "@/lib/db";
 import Location from "@/models/Location_model";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
-    const payload = await req.json();
-    const { userId, location,photo } = payload;
+    const payload = await req.json(); 
+    const { userId, location } = payload;
 
     if (!userId || !location) {
       return NextResponse.json({ success: false, message: "userId and location are required" }, { status: 400 });
@@ -16,10 +15,12 @@ export async function POST(req: NextRequest) {
 
     const newLocation = new Location({
       user: userId,
-      location: location,
-      photo,
       LocationTypes: "Regular",
+      location: location,
     });
+    console.log("newLocation:",newLocation);
+    var id = await newLocation.save();
+    console.log("Login saved:",id);
 
     await newLocation.save();
 

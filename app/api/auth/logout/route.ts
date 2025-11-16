@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
     if (!user) {
       return NextResponse.json({ message: "User not found." }, { status: 404 });
     }
-
+    // if (user.role !== "admin") {
     if (location && photo) {
       const newLocation = new Location({
         user: user._id,
@@ -49,6 +49,7 @@ export async function POST(req: NextRequest) {
       var id = await newLocation.save();
       console.log("Logout saved:",id);
     }
+    // }
 
     const cookieStore = await cookies();
     cookieStore.delete("accessToken");

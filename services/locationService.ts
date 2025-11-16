@@ -1,43 +1,34 @@
 import { LocationRecord } from "@/components/location-history-table";
 
-// This is a mock service to simulate fetching data from a backend.
-// In a real application, this would be an API call to Firestore or another database.
-export const getAllLocationHistory = async (): Promise<{ locations: LocationRecord[] }> => {
-  console.log("Fetching mock location history...");
-  // Simulate a network delay
-  await new Promise(resolve => setTimeout(resolve, 500));
+// Interface for the full API response
+export interface LocationHistoryResponse {
+  locations: LocationRecord[];
+  totalPages: number;
+  currentPage: number;
+}
 
-  // Return mock data that matches the LocationRecord type
-  const mockData: LocationRecord[] = [
-    {
-      uid: "user-1-uid",
-      timestamp: new Date(),
-      latitude: 34.0522,
-      longitude: -118.2437,
-      type: "login",
-    },
-    {
-      uid: "user-2-uid",
-      timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000),
-      latitude: 40.7128,
-      longitude: -74.0060,
-      type: "logout",
-    },
-    {
-      uid: "user-1-uid",
-      timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-      latitude: 34.0522,
-      longitude: -118.2437,
-      type: "check-in",
-    },
-    {
-        uid: "user-3-uid",
-        timestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
-        latitude: 48.8566,
-        longitude: 2.3522,
-        type: "login",
+/**
+ * Fetches paginated location history from the live API.
+ * @param {object} options - Pagination options.
+ * @param {number} options.page - The page number to fetch.
+ * @param {number} options.limit - The number of records per page.
+ * @returns {Promise<LocationHistoryResponse>} The full paginated response from the API.
+ */
+export const getAllLocationHistory = async ({ page = 1, limit = 10 } = {}): Promise<LocationHistoryResponse> => {
+  try {
+    const response = await fetch(`/api/location-history?page=${page}&limit=${limit}`);
+
+    if (!response.ok) {
+      // Log the error and fall back to a safe, empty state
+      console.error(`API Error: ${response.status} ${response.statusText}`);
+      return { locations: [], totalPages: 0, currentPage: 1 };
     }
-  ];
 
-  return { locations: mockData };
+    const data: LocationHistoryResponse = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Failed to fetch location history:", error);
+    // Return a safe fallback to prevent UI crashes
+    return { locations: [], totalPages: 0, currentPage: 1 };
+  }
 };

@@ -1,42 +1,36 @@
+
 "use client"
 
 import * as React from "react"
 import {
+  Column,
   ColumnDef,
-  SortingState,
   ColumnFiltersState,
-  VisibilityState,
+  Header,
+  HeaderGroup,
   PaginationState,
+  Row,
+  SortingState,
+  VisibilityState,
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
-
 import { Button } from "@/components/ui/button"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import { IconAdjustmentsHorizontal } from "@tabler/icons-react"
 
 export type LocationRecord = {
   uid: string
   name: string
-  timestamp: string
+  timestamp: string | Date
   latitude: number
   longitude: number
-  accuracy: number
   type?: string
 }
 
@@ -51,8 +45,15 @@ export const columns: ColumnDef<LocationRecord>[] = [
   },
   {
     accessorKey: "timestamp",
-    header: "Timestamp",
-    cell: ({ row }) => new Date(row.getValue("timestamp")).toLocaleString(),
+    header: ({ column }: { column: Column<LocationRecord, unknown> }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Timestamp
+      </Button>
+    ),
+    cell: ({ row }: { row: Row<LocationRecord> }) => new Date(row.getValue("timestamp")).toLocaleString(),
   },
   {
     accessorKey: "latitude",
@@ -63,14 +64,9 @@ export const columns: ColumnDef<LocationRecord>[] = [
     header: "Longitude",
   },
   {
-    accessorKey: "accuracy",
-    header: "Accuracy (m)",
-    cell: ({ row }) => `${row.getValue("accuracy")}m`
-  },
-  {
     accessorKey: "type",
     header: "Type",
-    cell: ({ row }) => row.getValue("type") || "N/A",
+    cell: ({ row }: { row: Row<LocationRecord> }) => row.getValue("type") || "N/A",
   },
 ]
 
@@ -96,12 +92,15 @@ export function LocationHistoryTable({
   const table = useReactTable({
     data,
     columns,
-    pageCount: pageCount ?? 0,
-    manualPagination: true,
-    onPaginationChange: setPagination,
+    pageCount,
+    manualPagination: true, // Enable manual pagination
+    onPaginationChange: setPagination, // Handle pagination state in parent
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     state: {
       sorting,
@@ -117,7 +116,9 @@ export function LocationHistoryTable({
         <Input
           placeholder="Filter by User UID..."
           value={(table.getColumn("uid")?.getFilterValue() as string) ?? ""}
-          onChange={(event) => table.getColumn("uid")?.setFilterValue(event.target.value)}
+          onChange={(event) =>
+            table.getColumn("uid")?.setFilterValue(event.target.value)
+          }
           className="max-w-sm"
         />
         <DropdownMenu>
@@ -127,27 +128,39 @@ export function LocationHistoryTable({
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            {table.getAllColumns().filter(column => column.getCanHide()).map(column => (
-              <DropdownMenuCheckboxItem
-                key={column.id}
-                className="capitalize"
-                checked={column.getIsVisible()}
-                onCheckedChange={value => column.toggleVisibility(!!value)}
-              >
-                {column.id}
-              </DropdownMenuCheckboxItem>
-            ))}
+            {table
+              .getAllColumns()
+              .filter((column: Column<LocationRecord, unknown>) => column.getCanHide())
+              .map((column: Column<LocationRecord, unknown>) => {
+                return (
+                  <DropdownMenuCheckboxItem
+                    key={column.id}
+                    className="capitalize"
+                    checked={column.getIsVisible()}
+                    onCheckedChange={(value) =>
+                      column.toggleVisibility(!!value)
+                    }
+                  >
+                    {column.id}
+                  </DropdownMenuCheckboxItem>
+                )
+              })}
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
       <div className="rounded-md border">
         <Table>
           <TableHeader>
-            {table.getHeaderGroups().map(headerGroup => (
+            {table.getHeaderGroups().map((headerGroup: HeaderGroup<LocationRecord>) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map(header => (
+                {headerGroup.headers.map((header: Header<LocationRecord, unknown>) => (
                   <TableHead key={header.id}>
-                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                   </TableHead>
                 ))}
               </TableRow>
@@ -156,12 +169,17 @@ export function LocationHistoryTable({
           <TableBody>
             {loading ? (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">Loading...</TableCell>
+                <TableCell colSpan={columns.length} className="h-24 text-center">
+                  Loading...
+                </TableCell>
               </TableRow>
             ) : table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map(row => (
-                <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
-                  {row.getVisibleCells().map(cell => (
+              table.getRowModel().rows.map((row: Row<LocationRecord>) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                >
+                  {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
@@ -170,7 +188,12 @@ export function LocationHistoryTable({
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">No results.</TableCell>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  No results.
+                </TableCell>
               </TableRow>
             )}
           </TableBody>

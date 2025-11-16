@@ -19,6 +19,7 @@ import Loading from "@/components/ui/loading"
 import { useRouter } from "next/navigation"
 
 type User = {
+  _id: string
   userId: string
   name: string
   email: string
@@ -73,6 +74,7 @@ const Page = () => {
           <TableCaption>A list of all users.</TableCaption>
           <TableHeader>
             <TableRow>
+              <TableHead>UUID</TableHead>
               <TableHead>Name</TableHead>
               <TableHead>Email</TableHead>
               <TableHead className="text-right">Role</TableHead>
@@ -83,6 +85,7 @@ const Page = () => {
             {allUsers.length > 0 ? (
               allUsers.map((user) => (
                 <TableRow key={user.email} onClick={() => handleUserClick(user.userId)} className="cursor-pointer">
+                  <TableCell>{user._id}</TableCell>
                   <TableCell>{user.name}</TableCell>
                   <TableCell>{user.email}</TableCell>
                   <TableCell className="text-right">{user.role}</TableCell>
