@@ -32,7 +32,7 @@ const AddEmployeePage = () => {
         await addEmployee({ ...data, adminEmail: user.email });
         toast.success("Employee added successfully!");
       } catch (error) {
-        toast.error("Failed to add employee.");
+        toast.error("Failed to add employee."+error);
       } finally {
         setLoading(false);
       }

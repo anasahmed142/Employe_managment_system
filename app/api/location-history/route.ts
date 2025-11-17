@@ -1,7 +1,7 @@
-import mongoose, { Types } from "mongoose";
+import { Types } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 import { connectionToDatabase } from "@/lib/db";
-import Location, { ILocation } from "@/models/Location_model";
+import Location from "@/models/Location_model";
 
 // Interface for the final location record sent in the API response
 interface LocationRecord {
@@ -51,8 +51,8 @@ export async function GET(req: NextRequest) {
       }
 
       // Safely access user ID and name from populated object
-      const userId = (loc.user as any)._id?.toString();
-      const fullname = (loc.user as any).name?.toString();
+      const userId = loc.user._id?.toString();
+      const fullname = loc.user.name?.toString();
 
       if (!userId) {
         console.warn("Skipping a location document with an invalid user ID:", loc);

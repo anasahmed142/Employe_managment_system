@@ -10,7 +10,7 @@ export const openCamera = async (): Promise<string> => {
   
         video.srcObject = stream;
         video.play().catch((err) => {
-          reject(new Error("Unable to start camera playback."));
+          reject(new Error("Unable to start camera playback."+err));
         });
   
         video.onloadedmetadata = () => {
@@ -33,19 +33,19 @@ export const openCamera = async (): Promise<string> => {
           }, 500); // short delay for better focus
         };
       });
-    } catch (error: any) {
+    } catch (error) {
       console.error("Camera access error:", error);
   
       // Friendly error handling
-      if (error.name === "NotAllowedError") {
+      // if (error.name === "NotAllowedError") {
         throw new Error("Camera permission denied. Please allow access to use this feature.");
-      } else if (error.name === "NotFoundError") {
-        throw new Error("No camera found on this device.");
-      } else if (error.name === "NotReadableError") {
-        throw new Error("Camera is already in use by another application.");
-      } else {
-        throw new Error("Unexpected error accessing camera: " + error.message);
-      }
+      // } else if (error.name === "NotFoundError") {
+      //   throw new Error("No camera found on this device.");
+      // } else if (error.name === "NotReadableError") {
+      //   throw new Error("Camera is already in use by another application.");
+      // } else {
+      //   throw new Error("Unexpected error accessing camera: " + error.message);
+      // }
     }
   };
   
