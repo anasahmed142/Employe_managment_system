@@ -2,6 +2,7 @@ import mongoose, { Types } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 import { connectionToDatabase } from "@/lib/db";
 import Location, { ILocation } from "@/models/Location_model";
+import User from "@/models/User_model";
 
 // Interface for the final location record sent in the API response
 interface LocationRecord {

@@ -68,6 +68,60 @@ export const columns: ColumnDef<LocationRecord>[] = [
     header: "Type",
     cell: ({ row }: { row: Row<LocationRecord> }) => row.getValue("type") || "N/A",
   },
+  // {
+  //   id: "actions",
+  //   header: "Actions",
+  //   cell: ({ row }) => {
+  //     const record = row.original;
+  //     const lat = record.latitude;
+  //     const lng = record.longitude;
+
+  //     const valid = typeof lat === "number" && typeof lng === "number";
+
+  //     return (
+  //       <button
+  //         className="px-3 py-1 text-sm border rounded"
+  //         onClick={() =>
+  //           valid &&
+  //           window.open(
+  //             `https://www.google.com/maps?q=${lat},${lng}`,
+  //             "_blank",
+  //             "noopener,noreferrer"
+  //           )
+  //         }
+  //         disabled={!valid}
+  //       >
+  //         View Location
+  //       </button>
+  //     );
+  //   },
+  // }
+
+  {
+    id: "actions",
+    header: "Actions",
+    cell: ({ row }) => {
+      const record = row.original;
+      const isLocationValid =
+        typeof record.latitude === "number" &&
+        typeof record.longitude === "number";
+
+      return (
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => {
+            if (isLocationValid) {
+              window.open(`https://www.google.com/maps?q=${record.latitude},${record.longitude}`, "_blank", "noopener,noreferrer");
+            }
+          }}
+          disabled={!isLocationValid}
+        >
+          View Location
+        </Button>
+      );
+    },
+  },
 ]
 
 interface LocationHistoryTableProps {
@@ -158,9 +212,9 @@ export function LocationHistoryTable({
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
                   </TableHead>
                 ))}
               </TableRow>

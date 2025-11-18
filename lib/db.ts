@@ -1,5 +1,8 @@
 import mongoose from 'mongoose';
 
+import "@/models/User_model";
+import "@/models/Location_model";
+
 const MongooseURI = process.env.MONGOOSE_URI!;
 
 if (!MongooseURI) {
