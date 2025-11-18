@@ -13,6 +13,7 @@ interface AddEmployeePayload {
   name: string;
   email: string;
   adminEmail: string;
+  salery: string;
 }
 
 export const getAllUser = async (payload: AllUserPayload) => {

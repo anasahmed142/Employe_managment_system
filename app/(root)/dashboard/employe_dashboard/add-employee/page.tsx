@@ -13,6 +13,7 @@ import { addEmployee } from "@/services/adminservice";
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Invalid email address"),
+  salery: z.string().min(1, "Invalid salery"),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -50,6 +51,10 @@ const AddEmployeePage = () => {
         <div>
           <Input placeholder="Email" {...register("email")} />
           {errors.email && <p className="text-red-500">{errors.email.message}</p>}
+        </div>
+        <div>
+          <Input placeholder="Per Day Salery" {...register("salery")} />
+          {errors.salery && <p className="text-red-500">{errors.salery.message}</p>}
         </div>
         <Button type="submit" disabled={loading}>
           {loading ? "Adding..." : "Add Employee"}

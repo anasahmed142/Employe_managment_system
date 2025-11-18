@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
     if (!checkpassword) {
       return NextResponse.json({ success: false, message: "Invalid credentials" }, { status: 401 });
     }
-
+    location.photo = photo;
     // if (user.role !== "admin") {
       const newLocation = new Location({
         user: user._id,
