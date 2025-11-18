@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
         photo
       });
       console.log("newLocation:",newLocation);
-      var id = await newLocation.save();
+      const id = await newLocation.save();
       console.log("Login saved:",id);
     // }
 

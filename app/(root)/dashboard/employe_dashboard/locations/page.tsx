@@ -64,7 +64,7 @@ export default function LocationsPage() {
       </CardHeader>
       <CardContent>
         <div className="flex space-x-4 mb-4">
-          <Select onValuechange={setSelectedUser} value={selectedUser}>
+          <Select onValueChange={setSelectedUser} value={selectedUser}>
             <SelectTrigger>
               <SelectValue placeholder="Select Employee" />
             </SelectTrigger>
