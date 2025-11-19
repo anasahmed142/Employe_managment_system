@@ -37,7 +37,7 @@ const UserLocationHistory = () => {
       const fetchLocations = async () => {
         try {
           setLoading(true);
-          const res = await api.get(`/api/location?userId=${userId}`);
+          const res = await api.get(`location?userId=${userId}`);
           if (!res.data) {
             throw new Error('Failed to fetch location history');
           }
