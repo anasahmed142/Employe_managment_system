@@ -12,6 +12,7 @@ interface LocationRecord {
   longitude: number;
   accuracy: number;
   type: string;
+  photo: string;
 }
 
 export async function GET(req: NextRequest) {
@@ -34,7 +35,6 @@ export async function GET(req: NextRequest) {
       .skip(skip)
       .limit(limit)
       .populate<{ user: { _id: Types.ObjectId; name: string } }>("user", "_id name");
-
     // --- Null-Safe and Type-Safe Mapping ---
     // Use .reduce() to safely build the array, skipping any invalid documents
     const formattedLocations = locations.reduce<LocationRecord[]>((acc, loc) => {
@@ -68,8 +68,9 @@ export async function GET(req: NextRequest) {
         longitude: loc.location.longitude,
         accuracy: loc.location.accuracy,
         type: loc.LocationTypes,
+        photo: loc.location.photo || "",
       });
-
+// console.log(acc);
       return acc;
     }, []);
 

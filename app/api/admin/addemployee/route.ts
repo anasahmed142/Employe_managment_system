@@ -7,7 +7,7 @@ connectionToDatabase();
 
 export async function POST(request: Request) {
   try {
-    const { name, email, adminEmail } = await request.json();
+    const { name, salery, email, adminEmail } = await request.json();
 
     // Check if the user making the request is an admin
     const admin = await User.findOne({ email: adminEmail });
@@ -31,6 +31,7 @@ export async function POST(request: Request) {
     const newUser = new User({
       name,
       email,
+      salery,
       password: "password", // Default password
     });
 

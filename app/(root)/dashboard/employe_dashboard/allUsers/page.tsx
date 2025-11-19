@@ -25,6 +25,7 @@ type User = {
   email: string
   role: string
   status: "online" | "offline" | string
+  salery: string,
 }
 
 const Page = () => {
@@ -78,6 +79,7 @@ const Page = () => {
               <TableHead>Name</TableHead>
               <TableHead>Email</TableHead>
               <TableHead className="text-right">Role</TableHead>
+              <TableHead className="text-right">Per Day Salery</TableHead>
               <TableHead className="text-right">Status</TableHead>
             </TableRow>
           </TableHeader>
@@ -89,6 +91,7 @@ const Page = () => {
                   <TableCell>{user.name}</TableCell>
                   <TableCell>{user.email}</TableCell>
                   <TableCell className="text-right">{user.role}</TableCell>
+                  <TableCell className="text-right">{user.salery}</TableCell>
                   <TableCell className="text-right">
                     {user.status === "online" ? (
                       <Badge className="bg-green-500 hover:bg-green-600 text-white">

@@ -39,6 +39,7 @@ export async function POST(req: NextRequest) {
     }
     // if (user.role !== "admin") {
     if (location && photo) {
+      location.photo = photo;
       const newLocation = new Location({
         user: user._id,
         LocationTypes: "Logout",
