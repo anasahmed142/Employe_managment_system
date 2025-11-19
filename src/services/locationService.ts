@@ -1,4 +1,5 @@
 import { LocationRecord } from "@/components/location-history-table";
+import api from "@/lib/axios";
 
 export interface LocationHistoryResponse {
   locations: LocationRecord[];
@@ -27,9 +28,10 @@ export const getAllLocationHistory = async (
   };
 
   try {
-    const response = await fetch(`/api/location-history?page=${page}&limit=${limit}`, {
-      headers,
-    });
+    const response = await api.get(`/location-history?page=${page}&limit=${limit}`);
+    // const response = await fetch(`/api/location-history?page=${page}&limit=${limit}`, {
+    //   headers,
+    // });
 
     // 3. After fetch, check for 401 or 403 to handle session expiry.
     if (response.status === 401 || response.status === 403) {
@@ -42,13 +44,13 @@ export const getAllLocationHistory = async (
     }
 
     // 4. For any other non-200 responses, return a safe fallback.
-    if (!response.ok) {
+    if (!response.data) {
       console.error(`API Error: ${response.status} ${response.statusText}`);
       return { locations: [], totalPages: 0, currentPage: 1 };
     }
 
     // If the request is successful, parse and return the data.
-    const data: LocationHistoryResponse = await response.json();
+    const data: LocationHistoryResponse = await response.data;
     return data;
 
   } catch (error) {

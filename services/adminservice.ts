@@ -30,3 +30,12 @@ export const addEmployee = async (payload: AddEmployeePayload) => {
   const res = await api.post("/admin/addemployee", payload);
   return res.data;
 };
+
+interface DeleteUserPayload {
+  userId: string;
+}
+
+export const deleteUser = async (payload: DeleteUserPayload) => {
+  const res = await api.post("/admin/deleteuser", payload);
+  return res.data;
+};

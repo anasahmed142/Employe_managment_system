@@ -29,6 +29,7 @@ export default function LocationHistoryPage() {
         page: pagination.pageIndex + 1, 
         limit: pagination.pageSize 
       });
+      console.log(response);
       
       setData(response.locations);
       setPageCount(response.totalPages);

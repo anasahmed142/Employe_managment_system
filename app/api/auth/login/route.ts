@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { connectionToDatabase } from "@/lib/db";
 import User from "@/models/User_model";
 import { cookies } from "next/headers";

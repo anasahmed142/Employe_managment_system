@@ -1,4 +1,4 @@
-
+export const dynamic = "force-dynamic";
 import { connectionToDatabase } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 import Location from "@/models/Location_model";

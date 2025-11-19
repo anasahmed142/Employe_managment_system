@@ -1,4 +1,4 @@
-
+export const dynamic = "force-dynamic";
 import { connectionToDatabase } from "@/lib/db";
 import Location from "@/models/Location_model";
 import User from "@/models/User_model";

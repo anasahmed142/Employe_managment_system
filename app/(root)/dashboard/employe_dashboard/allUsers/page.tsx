@@ -12,11 +12,13 @@ import {
 } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { getAllUser } from "@/services/adminservice"
+import { deleteUser } from "@/services/adminservice"
 import React, { useEffect, useState } from "react"
 import { toast } from "sonner"
 import { useAppSelector } from "@/store"
 import Loading from "@/components/ui/loading"
 import { useRouter } from "next/navigation"
+import { Button } from "@/components/ui/button"
 
 type User = {
   _id: string
@@ -32,6 +34,7 @@ const Page = () => {
   const [allUsers, setAllUsers] = useState<User[]>([])
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
+  const [deletingId, setDeletingId] = useState<string | null>(null)
   const user = useAppSelector((state) => state.auth.user);
   const router = useRouter();
 
@@ -63,6 +66,31 @@ const Page = () => {
     router.push(`/dashboard/employe_dashboard/allUsers/${userId}`);
   };
 
+  const handleEdit = (userId: string) => {
+    router.push(`/dashboard/employe_dashboard/allUsers/edit/${userId}`)
+  }
+
+  const handleDelete = async (userId: string) => {
+    const confirmed = confirm("Are you sure you want to delete this user?")
+    if (!confirmed) return
+
+    try {
+      setDeletingId(userId)
+      const res = await deleteUser({ userId })
+      // optimistic UI: remove user from list
+      setAllUsers((prev) => prev.filter((u) => u.userId !== userId))
+      toast.success(res?.message || "User deleted")
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        toast.error(err.message)
+      } else {
+        toast.error("Failed to delete user")
+      }
+    } finally {
+      setDeletingId(null)
+    }
+  }
+
   return (
     <div className="p-4">
       <h1 className="text-xl font-bold mb-4">All Users</h1>
@@ -74,21 +102,26 @@ const Page = () => {
         <Table>
           <TableCaption>A list of all users.</TableCaption>
           <TableHeader>
-            <TableRow>
+              <TableRow>
               <TableHead>UUID</TableHead>
               <TableHead>Name</TableHead>
               <TableHead>Email</TableHead>
               <TableHead className="text-right">Role</TableHead>
               <TableHead className="text-right">Per Day Salery</TableHead>
               <TableHead className="text-right">Status</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {allUsers.length > 0 ? (
               allUsers.map((user) => (
-                <TableRow key={user.email} onClick={() => handleUserClick(user.userId)} className="cursor-pointer">
+                <TableRow key={user.email}>
                   <TableCell>{user._id}</TableCell>
-                  <TableCell>{user.name}</TableCell>
+                  <TableCell>
+                    <button className="text-left text-primary underline" onClick={() => handleUserClick(user._id)}>
+                      {user.name}
+                    </button>
+                  </TableCell>
                   <TableCell>{user.email}</TableCell>
                   <TableCell className="text-right">{user.role}</TableCell>
                   <TableCell className="text-right">{user.salery}</TableCell>
@@ -103,11 +136,26 @@ const Page = () => {
                       </Badge>
                     )}
                   </TableCell>
+                  <TableCell className="text-right">
+                    <div className="flex items-center justify-end gap-2">
+                      <Button size="sm" variant="outline" onClick={() => handleEdit(user._id)}>
+                        Edit
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        onClick={() => handleDelete(user._id)}
+                        disabled={deletingId === user._id}
+                      >
+                        {deletingId === user._id ? "Deleting..." : "Delete"}
+                      </Button>
+                    </div>
+                  </TableCell>
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={5} className="text-center">
+                <TableCell colSpan={7} className="text-center">
                   No users found.
                 </TableCell>
               </TableRow>
