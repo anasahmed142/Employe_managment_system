@@ -19,15 +19,16 @@ export async function GET(req: NextRequest) {
   // Main try/catch block to prevent any unhandled exceptions and 500 errors
   try {
     await connectionToDatabase();
-
     // --- Pagination Logic (Kept Intact) ---
     const { searchParams } = new URL(req.url);
     const page = parseInt(searchParams.get("page") || "1", 10);
     const limit = parseInt(searchParams.get("limit") || "10", 10);
     const skip = (page - 1) * limit;
+    console.log('searchParams',searchParams);
 
     const totalRecords = await Location.countDocuments();
     const totalPages = Math.ceil(totalRecords / limit);
+    console.log('totalRecords',totalRecords);
 
     // --- Database Query with Type-Safe Population ---
     const locations = await Location.find()
@@ -35,6 +36,8 @@ export async function GET(req: NextRequest) {
       .skip(skip)
       .limit(limit)
       .populate<{ user: { _id: Types.ObjectId; name: string } }>("user", "_id name");
+    console.log('location',locations);
+
     // --- Null-Safe and Type-Safe Mapping ---
     // Use .reduce() to safely build the array, skipping any invalid documents
     const formattedLocations = locations.reduce<LocationRecord[]>((acc, loc) => {
@@ -70,7 +73,7 @@ export async function GET(req: NextRequest) {
         type: loc.LocationTypes,
         photo: loc.location.photo || "",
       });
-// console.log(acc);
+console.log('location',acc);
       return acc;
     }, []);
 

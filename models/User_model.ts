@@ -11,7 +11,7 @@ export interface IUser {
   status: 'online' | 'offline';
   role: 'employee' | 'admin';
   deletedAt?: Date | null;
-  salery: string;
+  salery?: string;
   generateAccessToken: () => string;
   generateRefreshToken: () => string;
    comparePassword(candidatePassword: string): Promise<boolean>;
@@ -50,7 +50,7 @@ const UserSchema = new mongoose.Schema({
   },
   salery: {
     type: String,
-    required: [true, 'salery is required'],
+    required: false,
     trim: true,
   },
 }, {
@@ -84,7 +84,6 @@ UserSchema.methods.generateAccessToken = function () {
       _id: this._id,
       name: this.name,
       email: this.email,
-      salery: this.salery,
        role : this.role
     },
     accessTokenSecret as Secret,
