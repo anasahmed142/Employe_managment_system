@@ -39,3 +39,30 @@ export const deleteUser = async (payload: DeleteUserPayload) => {
   const res = await api.post("/admin/deleteuser", payload);
   return res.data;
 };
+
+interface GetUserByIdPayload {
+  userId: string;
+}
+
+export const getUserById = async (payload: GetUserByIdPayload) => {
+  const res = await api.post("/admin/getuser", payload);
+  return res.data;
+};
+
+interface UpdateUserPayload {
+  userId: string;
+  name?: string;
+  email?: string;
+  role?: string;
+  salery?: string;
+}
+
+export const updateUser = async (payload: UpdateUserPayload) => {
+  const res = await api.post("/admin/updateuser", payload);
+  return res.data;
+};
+
+export const getPayroll = async () => {
+  const res = await api.post("/payroll");
+  return res.data;
+};

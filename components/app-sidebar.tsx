@@ -6,7 +6,8 @@ import {
   IconUsers,
   IconList,
   IconUserPlus,
-  IconMapPin
+  IconMapPin,
+  IconWallet,
 } from "@tabler/icons-react"
 import { NavMain } from "@/components/nav-main"
 import {
@@ -64,7 +65,11 @@ const data = {
       url: "/dashboard/employe_dashboard/location-history",
       icon: IconMapPin,
     },
-   
+   {
+    title: "Payroll",
+    icon: IconWallet,
+    url: "/dashboard/employe_dashboard/payroll",
+  },
   ],
 }
 

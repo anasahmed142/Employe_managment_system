@@ -78,7 +78,7 @@ const Page = () => {
       setDeletingId(userId)
       const res = await deleteUser({ userId })
       // optimistic UI: remove user from list
-      setAllUsers((prev) => prev.filter((u) => u.userId !== userId))
+      setAllUsers((prev) => prev.filter((u) => u._id !== userId))
       toast.success(res?.message || "User deleted")
     } catch (err: unknown) {
       if (err instanceof Error) {
