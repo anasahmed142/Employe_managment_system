@@ -8,7 +8,7 @@ import Loading from '@/components/ui/loading';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Image from 'next/image';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-
+import api from "@/lib/axios";
 interface ILocation {
   _id: string;
   user: {
@@ -37,11 +37,11 @@ const UserLocationHistory = () => {
       const fetchLocations = async () => {
         try {
           setLoading(true);
-          const res = await fetch(`/api/location?userId=${userId}`);
-          if (!res.ok) {
+          const res = await api.get(`/api/location?userId=${userId}`);
+          if (!res.data) {
             throw new Error('Failed to fetch location history');
           }
-          const data = await res.json();
+          const data = await res.data;
           setLocations(data);
         } catch (err: unknown) {
           if (err instanceof Error) {

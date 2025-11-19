@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',        // REQUIRED for Capacitor
+  output: 'standalone',        // REQUIRED for Capacitor
   distDir: 'out',          // Capacitor expects /out
   images: {
     unoptimized: true,     // required for static export

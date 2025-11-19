@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { Types } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 import { connectionToDatabase } from "@/lib/db";
@@ -70,7 +71,6 @@ export async function GET(req: NextRequest) {
         type: loc.LocationTypes,
         photo: loc.location.photo || "",
       });
-// console.log(acc);
       return acc;
     }, []);
 
