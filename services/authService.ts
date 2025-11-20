@@ -22,18 +22,18 @@ interface LogoutPayload {
   photo?: string;
 }
 export const registerApi = async (payload: LoginPayload) => {
-    const res = await api.post("https://ems-api-qix4.onrender.com/api/auth/register", payload);
+    const res = await api.post("https://ems-api-theta-blush.vercel.app/api/auth/register", payload);
     return res.data;
 }
 
 export const loginApi = async (payload: LoginPayload) => {
   console.log("payload:",payload);
   
-  const res = await api.post("https://ems-api-qix4.onrender.com/api/auth/login", payload);
+  const res = await api.post("https://ems-api-theta-blush.vercel.app/api/auth/login", payload);
   return res.data; 
 };
 export const logoutApi = async (payload: LogoutPayload) => {
-  const res = await api.post("https://ems-api-qix4.onrender.com/api/auth/logout", payload, { withCredentials: true });
+  const res = await api.post("https://ems-api-theta-blush.vercel.app/api/auth/logout", payload, { withCredentials: true });
   return res;
 };
 

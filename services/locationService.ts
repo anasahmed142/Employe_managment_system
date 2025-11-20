@@ -17,7 +17,7 @@ export interface LocationHistoryResponse {
  */
 export const getAllLocationHistory = async ({ page = 1, limit = 10 } = {}): Promise<LocationHistoryResponse> => {
   try {
-    const response = await api.get(`https://ems-api-qix4.onrender.com/api/location-history?page=${page}&limit=${limit}`);
+    const response = await api.get(`https://ems-api-theta-blush.vercel.app/api/location-history?page=${page}&limit=${limit}`);
     if (!response.data) {
       // Log the error and fall back to a safe, empty state
       console.error(`API Error: ${response.status} ${response.statusText}`);

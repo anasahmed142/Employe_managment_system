@@ -34,7 +34,7 @@ export default function ClientLocationHistory({ userId }: { userId: string }) {
       const fetchLocations = async () => {
         try {
           setLoading(true);
-          const res = await api.get(`https://ems-api-qix4.onrender.com/api/location?userId=${userId}`);
+          const res = await api.get(`https://ems-api-theta-blush.vercel.app/api/location?userId=${userId}`);
           if (!res.data) {
             throw new Error('Failed to fetch location history');
           }

@@ -17,17 +17,17 @@ interface AddEmployeePayload {
 }
 
 export const getAllUser = async (payload: AllUserPayload) => {
-  const res = await api.post("https://ems-api-qix4.onrender.com/api/admin/alluser", payload);
+  const res = await api.post("https://ems-api-theta-blush.vercel.app/api/admin/alluser", payload);
   return res.data;
 };
 
 export const getLocationHistory = async (payload: LocationHistoryPayload) => {
-  const res = await api.post("https://ems-api-qix4.onrender.com/api/location", payload);
+  const res = await api.post("https://ems-api-theta-blush.vercel.app/api/location", payload);
   return res.data;
 };
 
 export const addEmployee = async (payload: AddEmployeePayload) => {
-  const res = await api.post("https://ems-api-qix4.onrender.com/api/admin/addemployee", payload);
+  const res = await api.post("https://ems-api-theta-blush.vercel.app/api/admin/addemployee", payload);
   return res.data;
 };
 
@@ -36,7 +36,7 @@ interface DeleteUserPayload {
 }
 
 export const deleteUser = async (payload: DeleteUserPayload) => {
-  const res = await api.post("https://ems-api-qix4.onrender.com/api/admin/deleteuser", payload);
+  const res = await api.post("https://ems-api-theta-blush.vercel.app/api/admin/deleteuser", payload);
   return res.data;
 };
 
@@ -45,7 +45,7 @@ interface GetUserByIdPayload {
 }
 
 export const getUserById = async (payload: GetUserByIdPayload) => {
-  const res = await api.post("https://ems-api-qix4.onrender.com/api/admin/getuser", payload);
+  const res = await api.post("https://ems-api-theta-blush.vercel.app/api/admin/getuser", payload);
   return res.data;
 };
 
@@ -58,11 +58,11 @@ interface UpdateUserPayload {
 }
 
 export const updateUser = async (payload: UpdateUserPayload) => {
-  const res = await api.post("https://ems-api-qix4.onrender.com/api/admin/updateuser", payload);
+  const res = await api.post("https://ems-api-theta-blush.vercel.app/api/admin/updateuser", payload);
   return res.data;
 };
 
 export const getPayroll = async () => {
-  const res = await api.post("https://ems-api-qix4.onrender.com/api/payroll");
+  const res = await api.post("https://ems-api-theta-blush.vercel.app/api/payroll");
   return res.data;
 };
