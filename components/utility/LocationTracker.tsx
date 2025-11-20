@@ -28,7 +28,7 @@ const LocationTracker = () => {
           location,
         };
 
-        const res = await api.post("/track-location", responseData);
+        const res = await api.post("http://localhost:5000/api/track-location", responseData);
 
         console.log("Location response:", res.data);
       } catch (error) {

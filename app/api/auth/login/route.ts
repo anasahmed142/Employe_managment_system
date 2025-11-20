@@ -1,73 +1,11 @@
+import { NextResponse } from 'next/server'
 
-import { connectionToDatabase } from "@/lib/db";
-import User from "@/models/User_model";
-import { cookies } from "next/headers";
-import { NextRequest, NextResponse } from "next/server";
-import Location from "@/models/Location_model";
-
-export async function POST(req: NextRequest) {
+export async function POST(req: Request) {
   try {
-    const payload = await req.json(); 
-    const { email, password, location, photo } = payload;
-
-    if (!email || !password) {
-      return NextResponse.json({ success: false, message: "Email and password are required" }, { status: 400 });
-    }
-
-    await connectionToDatabase();
-    const user = await User.findOne({ email });
-    if (!user) {
-      return NextResponse.json({ success: false, message: "Please enter a valid email." }, { status: 409 });
-    }
-
-    const checkpassword = await user.comparePassword(password);
-    if (!checkpassword) {
-      return NextResponse.json({ success: false, message: "Invalid credentials" }, { status: 401 });
-    }
-    location.photo = photo;
-    // if (user.role !== "admin") {
-      const newLocation = new Location({
-        user: user._id,
-        LocationTypes: "Login",
-        location: location,
-        photo
-      });
-      console.log("newLocation:",newLocation);
-      const id = await newLocation.save();
-      console.log("Login saved:",id);
-    // }
-
-    user.status = "online";
-    await user.save();
-
-    const token = user.generateAccessToken();
-    if (!token) {
-      return NextResponse.json({ success: false, message: "Token generation failed" }, { status: 500 });
-    }
-
-    const CookieStore = await cookies();
-    CookieStore.set({
-      name: "accessToken",
-      value: token,
-      httpOnly: true,
-      path: "/",
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 1 * 24 * 60 * 60, // 1 day
-      sameSite: "lax",
-    });
-
-    const loggedInUser = {
-      userId: user._id.toString(),
-      name: user.name,
-      email: user.email,
-      status: user.status,
-      role: user.role,
-      accessToken: token,
-    };
-
-    return NextResponse.json({ success: true, loggedInUser, message: "Login successful" }, { status: 200 });
-
-  } catch (error) {
-    return NextResponse.json({ success: false, error, message: "Internal Server Error" }, { status: 500 });
+    const body = await req.json()
+    // Very simple mock authentication — accept any email/password
+    return NextResponse.json({ success: true, data: { name: 'Mock User', email: body.email, role: 'admin' } })
+  } catch (err) {
+    return NextResponse.json({ success: false, message: 'Bad request' }, { status: 400 })
   }
 }

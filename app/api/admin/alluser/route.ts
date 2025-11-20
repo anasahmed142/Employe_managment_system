@@ -1,46 +1,11 @@
+import { NextResponse } from 'next/server'
 
-import { NextRequest, NextResponse } from "next/server";
-import { connectionToDatabase } from "@/lib/db";
-import User from "@/models/User_model";
+// Simple in-memory mock users for static builds and local dev
+const mockUsers = [
+  { _id: '1', userId: 'u1', name: 'Alice', email: 'alice@example.com', role: 'employee', status: 'offline', salery: '100' },
+  { _id: '2', userId: 'u2', name: 'Bob', email: 'bob@example.com', role: 'employee', status: 'online', salery: '120' },
+]
 
-export async function POST(req: NextRequest) {
-  try {
-    const body = await req.json();
-    console.log('Body in user:',body.email);
-    
-    const { email } = body || {};
-
-    if (!email) {
-      return NextResponse.json(
-        { success: false, message: "Email is required" },
-        { status: 400 }
-      );
-    }
-    await connectionToDatabase();
-    const adminUser = await User.findOne({ email }).select("role");
-    if (!adminUser || adminUser.role !== "admin") {
-      return NextResponse.json(
-        { success: false, message: "Not Authorized, only admin can access this" },
-        { status: 401 }
-      );
-    }
-    // Fetch all users except password and refreshToken
-    const allUsers = await User.find().select("-password -refreshToken");
-
-    if (!allUsers || allUsers.length === 0) {
-      return NextResponse.json(
-        { success: false, message: "No users found." },
-        { status: 404 }
-      );
-    }
-    return NextResponse.json(
-      { success: true, message: "All users retrieved successfully.", data: allUsers },
-      { status: 200 }
-    );
-  } catch (error) {
-    return NextResponse.json(
-      { success: false, message: "Internal Server Error", error },
-      { status: 500 }
-    );
-  }
+export async function POST(req: Request) {
+  return NextResponse.json({ success: true, message: 'Mock all users', data: mockUsers })
 }

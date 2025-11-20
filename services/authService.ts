@@ -22,18 +22,18 @@ interface LogoutPayload {
   photo?: string;
 }
 export const registerApi = async (payload: LoginPayload) => {
-    const res = await api.post("/auth/register", payload);
+    const res = await api.post("http://localhost:5000/api/auth/register", payload);
     return res.data;
 }
 
 export const loginApi = async (payload: LoginPayload) => {
   console.log("payload:",payload);
   
-  const res = await api.post("/auth/login", payload);
+  const res = await api.post("http://localhost:5000/api/auth/login", payload);
   return res.data; 
 };
 export const logoutApi = async (payload: LogoutPayload) => {
-  const res = await api.post("/auth/logout", payload, { withCredentials: true });
+  const res = await api.post("http://localhost:5000/api/auth/logout", payload, { withCredentials: true });
   return res;
 };
 

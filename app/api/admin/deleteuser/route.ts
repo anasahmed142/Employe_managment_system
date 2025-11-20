@@ -1,35 +1,12 @@
-import { NextRequest, NextResponse } from "next/server";
-import { connectionToDatabase } from "@/lib/db";
-import User from "@/models/User_model";
+import { NextResponse } from 'next/server'
 
-export async function POST(req: NextRequest) {
+export async function POST(req: Request) {
   try {
-    const body = await req.json();
-    const { userId } = body || {};
-
-    if (!userId) {
-      return NextResponse.json(
-        { success: false, message: "User ID is required" },
-        { status: 400 }
-      );
-    }
-    await connectionToDatabase();
-    const deletedUser = await User.findByIdAndDelete(userId);
-
-    if (!deletedUser) {
-      return NextResponse.json(
-        { success: false, message: "User not found." },
-        { status: 404 }
-      );
-    }
-    return NextResponse.json(
-      { success: true, message: "User deleted successfully." },
-      { status: 200 }
-    );
-  } catch (error) {
-    return NextResponse.json(
-      { success: false, message: "Internal Server Error", error },
-      { status: 500 }
-    );
+    const body = await req.json()
+    const userId = body.userId
+    // Mock delete: just echo back
+    return NextResponse.json({ success: true, message: `Mock: user ${userId} deleted` })
+  } catch (err) {
+    return NextResponse.json({ success: false, message: 'Bad request' }, { status: 400 })
   }
 }

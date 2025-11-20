@@ -17,17 +17,17 @@ interface AddEmployeePayload {
 }
 
 export const getAllUser = async (payload: AllUserPayload) => {
-  const res = await api.post("/admin/alluser", payload);
+  const res = await api.post("http://localhost:5000/api/admin/alluser", payload);
   return res.data;
 };
 
 export const getLocationHistory = async (payload: LocationHistoryPayload) => {
-  const res = await api.post("/location", payload);
+  const res = await api.post("http://localhost:5000/api/location", payload);
   return res.data;
 };
 
 export const addEmployee = async (payload: AddEmployeePayload) => {
-  const res = await api.post("/admin/addemployee", payload);
+  const res = await api.post("http://localhost:5000/api/admin/addemployee", payload);
   return res.data;
 };
 
@@ -36,7 +36,7 @@ interface DeleteUserPayload {
 }
 
 export const deleteUser = async (payload: DeleteUserPayload) => {
-  const res = await api.post("/admin/deleteuser", payload);
+  const res = await api.post("http://localhost:5000/api/admin/deleteuser", payload);
   return res.data;
 };
 
@@ -45,7 +45,7 @@ interface GetUserByIdPayload {
 }
 
 export const getUserById = async (payload: GetUserByIdPayload) => {
-  const res = await api.post("/admin/getuser", payload);
+  const res = await api.post("http://localhost:5000/api/admin/getuser", payload);
   return res.data;
 };
 
@@ -58,11 +58,11 @@ interface UpdateUserPayload {
 }
 
 export const updateUser = async (payload: UpdateUserPayload) => {
-  const res = await api.post("/admin/updateuser", payload);
+  const res = await api.post("http://localhost:5000/api/admin/updateuser", payload);
   return res.data;
 };
 
 export const getPayroll = async () => {
-  const res = await api.post("/payroll");
+  const res = await api.post("http://localhost:5000/api/payroll");
   return res.data;
 };
