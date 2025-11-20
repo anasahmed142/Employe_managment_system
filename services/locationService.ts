@@ -24,7 +24,7 @@ export const getAllLocationHistory = async ({ page = 1, limit = 10 } = {}): Prom
       return { locations: [], totalPages: 0, currentPage: 1 };
     }
     console.log("Fetched location history data:", response.data);
-    const data: LocationHistoryResponse = await response.data;
+    const data: LocationHistoryResponse = await response.data.data;
     return data;
   } catch (error) {
     console.error("Failed to fetch location history:", error);

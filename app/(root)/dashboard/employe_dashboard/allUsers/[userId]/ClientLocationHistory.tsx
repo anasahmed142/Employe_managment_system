@@ -39,7 +39,9 @@ export default function ClientLocationHistory({ userId }: { userId: string }) {
             throw new Error('Failed to fetch location history');
           }
           const data = await res.data;
-          setLocations(data);
+          setLocations(data.data);
+          console.log(locations);
+          
         } catch (err: unknown) {
           if (err instanceof Error) {
             toast.error(err.message);
