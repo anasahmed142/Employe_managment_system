@@ -28,7 +28,7 @@ export const getAllLocationHistory = async (
   };
 
   try {
-    const response = await api.get(`http://localhost:5000/api/location-history?page=${page}&limit=${limit}`);
+    const response = await api.get(`https://ems-api-qix4.onrender.com/api/location-history?page=${page}&limit=${limit}`);
     // const response = await fetch(`/api/location-history?page=${page}&limit=${limit}`, {
     //   headers,
     // });
