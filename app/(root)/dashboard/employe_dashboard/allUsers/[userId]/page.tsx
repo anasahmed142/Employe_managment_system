@@ -1,15 +1,24 @@
 import ClientLocationHistory from './ClientLocationHistory'
 
-type Params = { userId: string }
+// type Params = { userId: string }
 
-export const dynamic = 'error' // enforce static generation for this route
+// export const dynamic = 'error' // enforce static generation for this route
 
-export async function generateStaticParams(): Promise<Params[]> {
-  // Return a small static fallback so static export succeeds without an external backend
-  return [{ userId: 'placeholder-user' }]
+// export async function generateStaticParams(): Promise<Params[]> {
+//   // Return a small static fallback so static export succeeds without an external backend
+//   return [{ userId: 'placeholder-user' }]
+// }
+
+// export default function Page({ params }: { params: Params }) {
+//   return <ClientLocationHistory userId={params.userId} />
+// }
+
+
+type PageProps = {
+  params: Promise<{ userId: string }>
 }
 
-export default function Page({ params }: { params: Params }) {
-  return <ClientLocationHistory userId={params.userId} />
+export default async function Page({ params }: PageProps) {
+  const { userId } = await params
+  return <ClientLocationHistory userId={userId} />
 }
-
